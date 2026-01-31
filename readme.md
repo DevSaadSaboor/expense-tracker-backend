@@ -55,7 +55,7 @@ Refresh tokens are stored in the database, allowing:
 
 1️⃣ Login
 `POST /auth/login`
-
+```md
 Returns:
 
 ```json

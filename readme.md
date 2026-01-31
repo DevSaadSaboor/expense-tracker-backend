@@ -53,7 +53,7 @@ Refresh tokens are stored in the database, allowing:
 
 ## 🔄 Authentication Flow
 
-<h2 style="color:#1f6feb;">1️⃣ Login</h2>
+1️⃣ Login
 `POST /auth/login`
 
 Returns:
@@ -64,24 +64,24 @@ Returns:
   "refresh_token": "..."
 }
 
-<h2 style="color:#1f6feb;">2️⃣ Access Protected APIs</h2>
+2️⃣ Access Protected APIs
 
 Use the access token:
 Authorization: Bearer <access_token>
 
-<h2 style="color:#1f6feb;">3️⃣ Access Token Expires</h2>
+3️⃣ Access Token Expires
 
 Protected APIs return:
 401 Unauthorized
 
-<h2 style="color:#1f6feb;">4️⃣ Refresh Tokenes</h2>
+4️⃣ Refresh Tokenes
 POST /auth/refresh
 Client sends the refresh token and receives:
 
 ->a new access token
 ->(and a new refresh token if rotation is enabled)
 
-<h2 style="color:#1f6feb;">5️⃣ Logout</h2>
+5️⃣ Logout
 POST /auth/logout
 
 The refresh token is revoked in the database, ending the session.

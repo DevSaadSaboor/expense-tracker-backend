@@ -53,7 +53,7 @@ Refresh tokens are stored in the database, allowing:
 
 ## 🔄 Authentication Flow
 
-<h2 style="color:#1f6feb;">1️⃣ Login</h2> 
+<h2 style="color:#1f6feb;">1️⃣ Login</h2>
 `POST /auth/login`
 
 Returns:

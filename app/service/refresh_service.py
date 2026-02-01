@@ -10,7 +10,7 @@ def issue_refresh_token(user_id: int):
     token = create_refresh_token()
     expires = refresh_expires_at()
 
-    insert_refresh_token(conn, user_id, token, expires)
+    insert_refresh_token(user_id, token, expires)
     return token
 
 

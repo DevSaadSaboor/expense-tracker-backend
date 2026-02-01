@@ -52,9 +52,17 @@ Refresh tokens are stored in the database, allowing:
 ---
 
 
+<<<<<<< HEAD
 ## 🔐 Authentication Flow
 
 ### 1️⃣ Login
+=======
+1️⃣ Login
+`POST /auth/login`
+
+```md
+Returns:
+>>>>>>> 79f38cd (v3: add PostgreSQL indexes and query optimizations)
 
 **Endpoint:** `POST /auth/login`
 
@@ -66,7 +74,11 @@ Refresh tokens are stored in the database, allowing:
 }
 ```
 
+<<<<<<< HEAD
 ### 2️⃣ Access Protected API
+=======
+2️⃣ Access Protected APIs
+>>>>>>> 79f38cd (v3: add PostgreSQL indexes and query optimizations)
 
 Use the access token in your requests:
 
@@ -74,7 +86,11 @@ Use the access token in your requests:
 Authorization: Bearer <access_token>
 ```
 
+<<<<<<< HEAD
 ### 3️⃣ Access Token Expires
+=======
+3️⃣ Access Token Expires
+>>>>>>> 79f38cd (v3: add PostgreSQL indexes and query optimizations)
 
 Protected APIs return:
 ```
@@ -85,13 +101,23 @@ Protected APIs return:
 
 **Endpoint:** `POST /auth/refresh`
 
+<<<<<<< HEAD
+=======
+4️⃣ Refresh Tokenes
+POST /auth/refresh
+>>>>>>> 79f38cd (v3: add PostgreSQL indexes and query optimizations)
 Client sends the refresh token and receives:
 - A new access token
 - (Optional) A new refresh token if rotation is enabled
 
 ### 5️⃣ Logout
 
+<<<<<<< HEAD
 **Endpoint:** `POST /auth/logout`
+=======
+5️⃣ Logout
+POST /auth/logout
+>>>>>>> 79f38cd (v3: add PostgreSQL indexes and query optimizations)
 
 The refresh token is revoked in the database, ending the session.
 
@@ -124,6 +150,7 @@ pip install -r requirements.txt
 # Run the server
 uvicorn app.main:app --reload
 ```
+<<<<<<< HEAD
 
 **Open Swagger UI:**
 ```
@@ -147,3 +174,6 @@ Built as a portfolio-grade backend project focused on real-world authentication,
 ## 📝 License
 
 MIT License - feel free to use this project for learning and portfolio purposes.
+=======
+````
+>>>>>>> 79f38cd (v3: add PostgreSQL indexes and query optimizations)

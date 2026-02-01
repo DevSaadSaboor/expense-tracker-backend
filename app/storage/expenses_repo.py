@@ -9,13 +9,13 @@ def create_expense(user_id,category_id,amount,note,spend_at):
     cur = connection.cursor()
     cur.execute("""
     Insert into expenses (user_id,category_id,amount,note,spend_at)
-    values(?,?,?,?,?)
+    values(%s,%s,%s,%s,%s)
     """,(user_id,category_id,amount,note,spend_at)
     )
     connection.commit()
     result = cur.lastrowid
     cur.execute("""
-    select id,user_id,category_id,amount,note,spend_at,created_at from expenses where id = ?             
+    select id,user_id,category_id,amount,note,spend_at,created_at from expenses where id = %s             
     """,(result,))
     row = cur.fetchone()
     return row_to_dict(row)
@@ -25,7 +25,7 @@ def get_expenses_by_user(user_id):
     connection = get_connection()
     cur = connection.cursor()
     cur.execute("""
-    Select id,user_id,category_id,amount,note,spend_at,created_at from expenses where user_id = ? order by amount asc
+    Select id,user_id,category_id,amount,note,spend_at,created_at from expenses where user_id = %s order by amount asc
     """,(user_id,))
     rows = cur.fetchall()
     return [row_to_dict(row) for row in rows]
@@ -35,7 +35,7 @@ def get_expenses_by_id(user_id,expense_id):
     connection = get_connection()
     cur = connection.cursor()
     cur.execute("""
-    Select id,user_id,category_id,amount,note,spend_at,created_at from expenses where id = ? and user_id = ?
+    Select id,user_id,category_id,amount,note,spend_at,created_at from expenses where id = %s and user_id = %s
     """,(expense_id,user_id))
     rows = cur.fetchone()
     if not rows:
@@ -49,7 +49,7 @@ def get_expense_by_category(user_id,category_id):
     cur.execute("""
     Select id,user_id,category_id,amount,note,spend_at,created_at 
     from expenses 
-    where user_id = ? and category_id = ?
+    where user_id = %s and category_id = %s
     order by spend_at desc
     """,(user_id,category_id))
     rows = cur.fetchall()
@@ -65,7 +65,7 @@ def get_expenses_with_category(user_id):
     from expenses
     join categories
     on expenses.category_id = categories.id
-    where expenses.user_id = ?
+    where expenses.user_id = %s
     """,(user_id,))
     rows = cur.fetchall()
     return [dict(row) for row in rows]
@@ -79,7 +79,7 @@ def get_category_totals(user_id):
     FROM expenses
     JOIN categories
     on expenses.category_id = categories.id
-    where user_id = ?
+    where user_id = %s
     group by categories.id,categories.name
     """,(user_id,))
     rows = cur.fetchall()
@@ -93,7 +93,7 @@ def get_category_month_total(user_id):
     select strftime('%Y-%m', spend_at) as month,
     sum(amount) as total
     from expenses
-    where user_id = ?
+    where user_id = %s
     group by strftime('%Y-%m', spend_at)
     order by month
     """,(user_id,))
@@ -109,7 +109,7 @@ def get_monthly_category_totals(user_id):
     from expenses
     join categories
     on categories.id = expenses.category_id
-    where expenses.user_id = ? 
+    where expenses.user_id = %s 
     GROUP by categories.name, strftime('%Y-%m', spend_at)
     """,(user_id,)) 
     rows = cur.fetchall()
@@ -122,8 +122,8 @@ def get_monthly_totals_between_dates(user_id, start_date, end_date):
     cur.execute("""
     select strftime('%Y-%m', spend_at) as month , sum(amount) as total_amount
     from expenses
-    where expenses.user_id = ? AND
-    expenses.spend_at BETWEEN ? and ? 
+    where expenses.user_id = %s AND
+    expenses.spend_at BETWEEN %s and %s 
     GROUP by strftime('%Y-%m', spend_at)
     ORDER by month
     """,(user_id,start_date,end_date))
@@ -137,10 +137,10 @@ def get_expenses_paginated(user_id, limit, offset):
     cur.execute("""
     select id,user_id,category_id,amount,note,spend_at,created_at
     from expenses 
-    where expenses.user_id = ? 
+    where expenses.user_id = %s 
     order by expenses.created_at DESC
-    limit ?
-    OFFSET ? 
+    limit %s
+    OFFSET %s 
     """,(user_id,limit,offset))
     rows = cur.fetchall()
     return [dict(row) for row in rows]
@@ -153,18 +153,18 @@ def update_expense(expense_id,user_id,fields):
     values = []
     for key,value in fields.items():
             
-            keys.append(f"{key} = ?" )
+            keys.append(f"{key} = %s" )
             values.append(value)
     set_clause = ",".join(keys)
     cur.execute(f"""
-    update expenses set {set_clause} where id = ? and user_id =?  
+    update expenses set {set_clause} where id = %s and user_id =%s  
     """,tuple(values) + (expense_id,user_id))
     connection.commit()
     result = cur.rowcount 
     if result == 0 :
         return None
     cur.execute("""
-    Select id,user_id,category_id,amount,note,spend_at,created_at from expenses where id = ? and user_id = ?
+    Select id,user_id,category_id,amount,note,spend_at,created_at from expenses where id = %s and user_id = %s
     """,(expense_id,user_id))
     row = cur.fetchone()
     if row is None :
@@ -176,7 +176,7 @@ def delete_expense(expense_id,user_id):
     connection = get_connection()
     cur = connection.cursor()
     cur.execute("""
-    delete from expenses where id = ? and user_id = ?
+    delete from expenses where id = %s and user_id = %s
     """,(expense_id,user_id))
     connection.commit()
     if cur.rowcount > 0:

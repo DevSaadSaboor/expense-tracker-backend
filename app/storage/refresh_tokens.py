@@ -1,35 +1,42 @@
 from datetime import datetime
+from app.storage.db import get_connection
 
-def insert_refresh_token(conn, user_id: int, token: str, expires_at):
-    conn.execute(
+def insert_refresh_token(user_id: int, token: str, expires_at):
+    connection = get_connection()
+    cur = connection.cursor()
+    cur.execute(
         """
         INSERT INTO refresh_tokens (user_id, token, expires_at)
-        VALUES (?, ?, ?)
+        VALUES (%s,%s,%s)
         """,
         (user_id, token, expires_at.isoformat())
     )
-    conn.commit()
+    connection.commit()
 
-def get_refresh_token(conn, token: str):
-    cur = conn.execute(
+def get_refresh_token(token: str):
+    connection = get_connection()
+    cur = connection.cursor()
+    cur.execute(
         """
         SELECT id, user_id, token, expires_at, revoked
         FROM refresh_tokens
-        WHERE token = ?
+        WHERE token = %s
         """,
         (token,)
     )
     return cur.fetchone()
 
 
-def revoke_refresh_token(conn, token: str):
-    conn.execute(
+def revoke_refresh_token(token: str):
+     connection = get_connection()
+     cur = connection.cursor()
+     cur.execute(
         """
         UPDATE refresh_tokens
         SET revoked = 1
-        WHERE token = ?
+        WHERE token = %s
         """,
         (token,)
     )
-    conn.commit()
+     connection.commit()
 

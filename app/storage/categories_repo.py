@@ -8,12 +8,12 @@ def create_category(user_id,name):
     cur = connection.cursor()
     cur.execute("""
     insert into categories(user_id,name)
-    values(?,?)
+    values(%s,%s)
 """,(user_id,name))
     connection.commit()
     data = cur.lastrowid
     cur.execute("""
-    select id,user_id,name,created_at from categories where id = ?
+    select id,user_id,name,created_at from categories where id = %s
 """,(data,))
     row = cur.fetchone()
     if row is None:
@@ -26,7 +26,7 @@ def get_categories_by_user(user_id):
     cur = connection.cursor()
 
     cur.execute(""" 
-    select id,user_id,name,created_at from categories where user_id = ? order by name asc 
+    select id,user_id,name,created_at from categories where user_id = %s order by name asc 
     """,(user_id,))
 
     rows= cur.fetchall()
@@ -38,7 +38,7 @@ def get_category_by_id(category_id,user_id):
     connection = get_connection()
     cur = connection.cursor()
     cur.execute("""
-    select id,user_id,name,created_at from categories where id = ? and user_id = ? 
+    select id,user_id,name,created_at from categories where id = %s and user_id = %s 
     """,(category_id,user_id))
 
     row = cur.fetchone()
@@ -54,12 +54,12 @@ def update_category(category_id,user_id,fields):
     values = []
 
     for key,value in fields.items():
-        set_parts.append(f"{key} = ?")
+        set_parts.append(f"{key} = %s")
         values.append(value)
     set_clause = ",".join(set_parts)
     
     cur.execute(f"""
-    UPDATE categories SET {set_clause} where id = ? and user_id = ?
+    UPDATE categories SET {set_clause} where id = %s and user_id = %s
     """,tuple(values) + (category_id,user_id))
 
     connection.commit()
@@ -68,7 +68,7 @@ def update_category(category_id,user_id,fields):
         return None
     
     cur.execute("""
-    select id,user_id,name,created_at from categories where id = ? and user_id = ?
+    select id,user_id,name,created_at from categories where id = %s and user_id = %s
     """,(category_id,user_id))
 
     row = cur.fetchone()
@@ -81,7 +81,7 @@ def delete_category( category_id,user_id):
     connection = get_connection()
     cur = connection.cursor()
     cur.execute("""
-    DELETE from categories where id = ? AND user_id = ?
+    DELETE from categories where id = %s AND user_id = %s
     """,(category_id,user_id))
     connection.commit()
 

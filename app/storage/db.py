@@ -1,22 +1,46 @@
-import sqlite3 
+import os
+import sqlite3
+import psycopg2
+import psycopg2.extras
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 
-DB_path = Path(__file__).resolve().parents[2] /"data"/ "expense_tracker.db"
+DB_path = Path(__file__).resolve().parents[2] / "data" / "expense_tracker.db"
 
-connection = None
-
+_connection = None
 
 def get_connection():
-    global connection
+    global _connection
 
+    if _connection is not None:
+        return _connection
+
+    db_url = os.getenv("DATABASE_URL")
+
+    if db_url:
+        # PostgreSQL
+        _connection = psycopg2.connect(db_url, cursor_factory=psycopg2.extras.RealDictCursor)
+        return _connection
+
+    # SQLite fallback
     DB_path.parent.mkdir(parents=True, exist_ok=True)
-    if connection is None:
-        connection = sqlite3.connect(DB_path)
-        connection.row_factory = sqlite3.Row
-        connection.execute("PRAGMA foreign_keys = ON;")
+    _connection = sqlite3.connect(DB_path)
+    _connection.row_factory = sqlite3.Row
+    _connection.execute("PRAGMA foreign_keys = ON;")
+    return _connection
 
-    return connection
+# DB_path = Path(__file__).resolve().parents[2] /"data"/ "expense_tracker.db"
+# connection = None
+# def get_connection():
+#     global connection
+#     DB_path.parent.mkdir(parents=True, exist_ok=True)
+#     if connection is None:
+#         connection = sqlite3.connect(DB_path)
+#         connection.row_factory = sqlite3.Row
+#         connection.execute("PRAGMA foreign_keys = ON;")
+#     return connection
 
 
 def create_table():

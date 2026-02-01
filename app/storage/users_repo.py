@@ -12,14 +12,14 @@ def create_user(name:str,email:str,password_hash):
     cur.execute(
     """
     INSERT into USERS (name,email,password_hash)
-    values(?,?,?);
+    values(%s,%s,%s);
     """,(name,email,password_hash)
     )
     connection.commit()
     newuser_id = cur.lastrowid
     cur.execute(
     """ 
-    SELECt id,name,email,created_at from users where id = ?
+    SELECt id,name,email,created_at from users where id = %s
     """,(newuser_id,)
     )
     row = cur.fetchone()
@@ -32,7 +32,7 @@ def list_users(limit:int,offset:int):
     cur = connection.cursor()
     cur.execute("""
     select id,name,email,created_at from users order by id
-    limit ? offset ?
+    limit %s offset %s
     """,(limit,offset))
 
     rows = cur.fetchall()
@@ -47,7 +47,7 @@ def get_user_by_id(user_id):
     cur = connection.cursor()
     cur.execute(
     """
-    SELECT  id,name,email,created_at from users where id = ? 
+    SELECT  id,name,email,created_at from users where id = %s 
     """,(user_id,)
     )
     row = cur.fetchone()
@@ -63,7 +63,7 @@ def update_user(user_id: int, fields: dict):
     set_parts = []
     values = []
     for key, value in fields.items():
-        set_parts.append(f"{key} = ?")
+        set_parts.append(f"{key} = %s")
         values.append(value)
     set_clause = ", ".join(set_parts)
     values.append(user_id)
@@ -71,7 +71,7 @@ def update_user(user_id: int, fields: dict):
         f"""
         UPDATE users
         SET {set_clause}
-        WHERE id = ?
+        WHERE id = %s
         """,
         tuple(values)
     )
@@ -80,7 +80,7 @@ def update_user(user_id: int, fields: dict):
         """
         SELECT id, name, email, created_at
         FROM users
-        WHERE id = ?
+        WHERE id = %s
         """,
         (user_id,)
     )
@@ -93,7 +93,7 @@ def delete_user(user_id : int):
     connection = get_connection()
     cur = connection.cursor()
     cur.execute("""
-    delete from users where id = ?
+    delete from users where id = %s
     """,(user_id,))
 
     connection.commit()
@@ -107,7 +107,7 @@ def get_user_by_lognin(email):
     cur = connection.cursor()
 
     cur.execute("""
-    select id,password_hash from users where email = ? 
+    select id,password_hash from users where email = %s 
     """,(email,))
     rows = cur.fetchone()
     return dict(rows) if rows else None

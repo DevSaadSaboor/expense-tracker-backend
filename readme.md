@@ -86,7 +86,7 @@ Authorization: Bearer <access_token>
 
 ### 3️⃣ Access Token Expires
 
-> > 79f38cd (v3: add PostgreSQL indexes and query optimizations)
+> > (v3: add PostgreSQL indexes and query optimizations)
 
 Protected APIs return:
 
@@ -98,7 +98,7 @@ Protected APIs return:
 
 **Endpoint:** `POST /auth/refresh`
 
-> > 79f38cd (v3: add PostgreSQL indexes and query optimizations)
+> > (v3: add PostgreSQL indexes and query optimizations)
 > > Client sends the refresh token and receives:
 
 - A new access token
@@ -108,7 +108,7 @@ Protected APIs return:
 
 **Endpoint:** `POST /auth/logout`
 
-> > 79f38cd (v3: add PostgreSQL indexes and query optimizations)
+> > (v3: add PostgreSQL indexes and query optimizations)
 
 The refresh token is revoked in the database, ending the session.
 

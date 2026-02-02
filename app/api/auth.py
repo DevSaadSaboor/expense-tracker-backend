@@ -68,9 +68,8 @@ def login(payload: LoginRequest):
 def refresh(payload:RefreshRequest):
     try:
         new_access = rotate_refresh_token(payload.refresh_token)
-        return ok({
-            'access_token' : new_access
-        })
+        return ok(new_access)
+    
     except InvalidUserInput as e:
         return fail('Invalid Refresh Token', str(e))
     
@@ -78,6 +77,7 @@ def refresh(payload:RefreshRequest):
 
 def logout(payload:LogoutRequest):
         delete = logout_user(payload.refresh_token)
-        return ok({'Log_out', True})
+        return ok({"logged_out": True})
+
 
 

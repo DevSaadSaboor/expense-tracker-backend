@@ -1,0 +1,28 @@
+# version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: expense_db
+    restart: always
+    environment:
+      POSTGRES_DB: expense_tracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    build: .
+    container_name: expense_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@db:5432/expense_tracker
+
+volumes:
+  postgres_data:

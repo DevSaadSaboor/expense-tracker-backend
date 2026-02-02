@@ -1,171 +1,302 @@
-# 💰 Expense Tracker Backend
+<div align="center">
+# 💰 Expense Tracker API
+</div>
+### A production-grade backend API for a personal expense tracking application, built with FastAPI, raw SQL, and JWT-based authentication with refresh tokens.
+This project is designed with clean architecture, security, and real-world backend practices in mind.
+---
 
-A production-grade backend API for a personal expense tracking application, built with **FastAPI**, **raw SQL**, and **JWT-based authentication with refresh tokens**.
+## 🌟 Features
 
-This project is designed with **clean architecture**, **security**, and **real-world backend practices** in mind.
+<table>
+<tr>
+<td width="50%">
+
+### 🔐 Authentication
+
+- ✅ User registration & login
+- ✅ JWT access tokens (short-lived)
+- ✅ Refresh tokens with rotation
+- ✅ Session revocation (logout)
+- ✅ Secure password hashing (bcrypt)
+
+</td>
+<td width="50%">
+
+### 📊 Data Management
+
+- ✅ Expense & category management
+- ✅ Monthly & category-wise reports
+- ✅ Pagination support
+- ✅ Raw SQL queries (no ORM)
+- ✅ PostgreSQL database
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🏗️ Infrastructure
+
+- ✅ Dockerized setup
+- ✅ Alembic migrations
+- ✅ Clean architecture
+- ✅ Environment configuration
+- ✅ API documentation (Swagger)
+
+</td>
+</tr>
+</table>
 
 ---
 
-## 🧩 Features
+## 🚀 Quick Start
 
-- User authentication (register, login)
-- JWT Access Tokens
-- Refresh Tokens with database-backed sessions
-- Token rotation & logout
-- Category management
-- Expense tracking
-- Monthly & category-wise reports
-- Pagination
-- Raw SQL (no ORM)
-- Clean architecture (API → Service → Storage)
+### Prerequisites
+
+- Docker & Docker Compose
+- Python 3.9+ (for local development)
+
+### 🐳 Run with Docker (Recommended)
+
+```bash
+
+# Start the application
+docker compose up --build
+```
+
+**🎉 That's it!** The API is now running at:
+
+- 📖 **Swagger UI:** http://localhost:8000/docs
+
+## 💻 Local Development
+
+### Without Docker
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+The API will be available at `http://localhost:8000`
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
-- **Python**
-- **FastAPI**
-- **SQLite** (v1)
-- **PostgreSQL** (planned for v2)
-- **Raw SQL**
-- **Pydantic v2**
-- **JWT (JSON Web Tokens)**
+<div align="center">
+
+FastAPI – Web framework
+PostgreSQL – Database
+psycopg2 – Raw SQL driver
+Alembic – Schema migrations
+Docker & Docker Compose – Containerization
+python-jose – JWT handling
+bcrypt – Password hashing
+
+</div>
+
+---
+
+## 🏗️ Architecture
+
+```
+expense-tracker-api/
+│
+├── 📁 api/                    # FastAPI routes & request/response models
+│   ├── auth.py               # Authentication endpoints
+│   ├── expenses.py           # Expense endpoints
+│   └── categories.py         # Category endpoints
+│
+├── 📁 service/                # Business logic & validation
+│   ├── auth_service.py
+│   ├── expense_service.py
+│   └── category_service.py
+│
+├── 📁 storage/                # Raw SQL repositories
+│   ├── user_repository.py
+│   ├── expense_repository.py
+│   └── category_repository.py
+│
+├── 📁 core/                   # Security, auth, shared utilities
+│   ├── security.py
+│   ├── config.py
+│   └── dependencies.py
+│
+├── 📁 migrations/             # Alembic database migrations
+│   └── versions/
+│
+├── 🐳 Dockerfile
+├── 🐳 docker-compose.yml
+├── 📄 requirements.txt
+└── 📄 .env.example
+```
+
+### Layered Designs
+
+- **API Layer:** Handles HTTP requests/responses, validation
+- **Service Layer:** Business rules, authentication, authorization
+- **Storage Layer:** Database operations, raw SQL queries
 
 ---
 
 ## 🔐 Authentication System
 
-This backend uses **Access Tokens + Refresh Tokens** for real-world authentication.
+### Token Architecture
 
-| Token              | Purpose                       | Lifetime    |
-| ------------------ | ----------------------------- | ----------- |
-| Access Token (JWT) | Used to access protected APIs | Short-lived |
-| Refresh Token      | Used to get new access tokens | Long-lived  |
+<div align="center">
 
-Refresh tokens are stored in the database, allowing:
+| Token Type           | Purpose                 | Lifetime    |
+| -------------------- | ----------------------- | ----------- |
+| 🎫 **Access Token**  | Authorize API requests  | Short Lived |
+| 🔄 **Refresh Token** | Issue new access tokens | Long Lived  |
 
-- logout
-- session revocation
-- multi-device login
-- stolen token protection
+</div>
+Refresh tokens:
+Are stored in the database
+Are rotated on every refresh
+Are revoked on logout
+Are checked for expiration and revocation
+
+### 🔄 Authentication Flow
+
+User logs in → receives access token + refresh token
+Access token is used for API requests
+When access token expires → client sends refresh token
+Backend validates and rotates the refresh token
+New access + refresh tokens are issued
+Logout revokes the refresh token in the database
+
+````
 
 ---
 
-## 🔐 Authentication Flow
+## 📚 API Endpoints
 
-### 1️⃣ Login
+### 🔐 Authentication
 
-`POST /auth/login`
-
-````md
-Returns:
-
-> > (v3: add PostgreSQL indexes and query optimizations)
-
-**Endpoint:** `POST /auth/login`
-
-**Returns:**
-
-```json
-{
-  "access_token": "...",
-  "refresh_token": "..."
-}
-```
+```http
+POST   /auth/register          Create new user account
+POST   /auth/login             Login and receive tokens
+POST   /auth/refresh           Rotate refresh token
+POST   /auth/logout            Revoke refresh token and logout
 ````
 
-### 2️⃣ Access Protected API
+### 💰 Expenses
 
-> > (v3: add PostgreSQL indexes and query optimizations)
-
-Use the access token in your requests:
-
+```http
+GET    /expenses               List expenses (paginated)
+POST   /expenses               Create new expense
+GET    /expenses/{id}          Get expense by ID
+PUT    /expenses/{id}          Update expense
+DELETE /expenses/{id}          Delete expense
 ```
+
+### 🏷️ Categories
+
+```http
+GET    /categories             List all categories
+POST   /categories             Create new category
+```
+
+### 🔒 Protected Endpoints
+
+All endpoints except `/auth/register` and `/auth/login` require authentication:
+
+```http
 Authorization: Bearer <access_token>
 ```
 
-### 3️⃣ Access Token Expires
+---
 
-> > (v3: add PostgreSQL indexes and query optimizations)
+## 🗄️ Database Schema
 
-Protected APIs return:
-
+```sql
+┌─────────────────────┐
+│       users         │
+├─────────────────────┤
+│ id (PK)             │
+│ name                │
+│ email (UNIQUE)      │
+│ password_hash       │
+│ created_at          │
+└─────────────────────┘
+          │
+          │
+          ▼
+┌─────────────────────┐       ┌─────────────────────┐
+│    categories       │       │   refresh_tokens    │
+├─────────────────────┤       ├─────────────────────┤
+│ id (PK)             │       │ id (PK)             │
+│ user_id (FK)        │       │ user_id (FK)        │
+│ name                │       │ token               │
+│ created_at          │       │ expires_at          │
+└─────────────────────┘       │ revoked             │
+          │                   │ created_at          │
+          │                   └─────────────────────┘
+          ▼
+┌─────────────────────┐
+│      expenses       │
+├─────────────────────┤
+│ id (PK)             │
+│ user_id (FK)        │
+│ category_id (FK)    │
+│ amount              │
+│ note                │
+│ spend_at            │
+│ created_at          │
+└─────────────────────┘
 ```
-401 Unauthorized
-```
 
-### 4️⃣ Refresh Tokens
+---
 
-**Endpoint:** `POST /auth/refresh`
+## ⚙️ Configuration
 
-> > (v3: add PostgreSQL indexes and query optimizations)
-> > Client sends the refresh token and receives:
+### Environment Variables
 
-- A new access token
-- (Optional) A new refresh token if rotation is enabled
+Create a `.env` file in the root directory:
 
-### 5️⃣ Logout
-
-**Endpoint:** `POST /auth/logout`
-
-> > (v3: add PostgreSQL indexes and query optimizations)
-
-The refresh token is revoked in the database, ending the session.
-
-## 🗄️ Database
-
-The system uses the following core tables:
-
-- 🔹 `users`
-- 🔹 `categories`
-- 🔹 `expenses`
-- 🔹 `refresh_tokens`
-
-The `refresh_tokens` table allows the backend to manage user sessions securely.
-
-## 🚀 How to Run
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/expense-tracker-backend
-cd expense-tracker-backend
-
-# Create virtual environment
+```env
 python -m venv venv
-venv\Scripts\activate  # On Windows
-# source venv/bin/activate  # On Mac/Linux
-
-# Install dependencies
+venv\Scripts\activate
 pip install -r requirements.txt
-
-# Run the server
+alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-**Open Swagger UI:**
+> ⚠️ **Security Warning:** Always use strong, unique values for `JWT_SECRET` in production!
 
-```
-http://127.0.0.1:8000/docs
-```
+---
 
-## 📈 Project Roadmap
+## 📈 Future Improvements
 
-- ✅ JWT Authentication
-- ✅ Refresh Tokens & Sessions
-- ✅ Logout & Token Revocation
-- ⬜ PostgreSQL migration
-- ⬜ Indexes & constraints
-- ⬜ Logging & observability
-- ⬜ Dockerization
+- [ ] 📝 Structured logging & Request Tracing
+- [ ] 🚀 Cloud deployment
+- [ ] 📈 Monitoring & metrics
+- [ ] 🔒 Rate limiting
+- [ ] 🏊 Connection pooling
+
+---
 
 ## 👨‍💻 Author
 
-Built as a portfolio-grade backend project focused on real-world authentication, clean architecture, and SQL-first design.
+## ** Saad Saboor **
 
-## 📝 License
+Built as a portfolio-grade backend project focused on:
 
-# MIT License - feel free to use this project for learning and portfolio purposes.
+- 🔐 Real-world authentication patterns
+- 🗄️ PostgreSQL and raw SQL
+- 🏗️ Clean architecture principles
+- 🚀 Production-ready best practices
 
-```
+---
 
-```
+<div align="center">
+
+### ⭐ Star this repo if you find it helpful!
+
+Made with ❤️ and FastAPI
+
+</div>

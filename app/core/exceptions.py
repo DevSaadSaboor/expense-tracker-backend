@@ -9,7 +9,6 @@ class InvalidUserInput(UserError):
 class EmailAlreadyExists(UserError):
     pass
 
-
 class UserNotFound(UserError):
     pass
 

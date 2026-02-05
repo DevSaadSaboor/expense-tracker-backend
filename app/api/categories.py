@@ -7,7 +7,8 @@ from typing import List,Optional
 from fastapi import Depends
 from app.api.dependencies import get_current_user_id
 from app.utils.response import ok,fail
-from app.utils.error_codes import CATEGORY_NOT_FOUND,EXPENSE_NOT_FOUND,INVALID_AMOUNT,INVALID_CREDENTIALS
+from app.utils.error_codes import CATEGORY_NOT_FOUND
+from app.core.logging import logger
 
 class CategoriesCreateRequest(BaseModel):
     name: str
@@ -21,8 +22,7 @@ class CategoriesUpdateRequest(BaseModel):
     name : Optional[str] = None
 @router.post("/",status_code= status.HTTP_201_CREATED)
 
-def create_category_endpoint(payload: CategoriesCreateRequest, user_id: int = Depends(get_current_user_id)):
-    
+def create_category_endpoint(payload: CategoriesCreateRequest, user_id: int = Depends(get_current_user_id)):    
     try:
         category = service_create_category(
         user_id=user_id,
@@ -51,7 +51,6 @@ def get_categories_byuser_endpoint(user_id: int = Depends(get_current_user_id)):
 @router.patch("/{category_id}" )
 
 def get_update_endpoint(category_id:int,payload:CategoriesUpdateRequest,user_id: int = Depends(get_current_user_id)):
-    
     try:
         update = service_update_category(
         user_id=user_id,
@@ -64,8 +63,7 @@ def get_update_endpoint(category_id:int,payload:CategoriesUpdateRequest,user_id:
 
 @router.delete("/{category_id}", status_code=status.HTTP_200_OK)
 
-def get_delete_endpoint(category_id:int,user_id: int = Depends(get_current_user_id)):
-    
+def get_delete_endpoint(category_id:int,user_id: int = Depends(get_current_user_id)):   
     try:
         delete = service_delete_category(user_id,category_id)
     except InvalidUserInput as e :

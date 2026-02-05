@@ -1,4 +1,4 @@
-from typing import Optional,List,Dict
+from typing import Dict
 from app.storage.db import get_connection
 from psycopg2.extras import RealDictCursor
 

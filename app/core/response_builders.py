@@ -8,6 +8,7 @@ def success_response(data: Any) -> APIResponse:
         error=None
     )
 
+
 def error_response(code: str, message: str, details: dict | None = None) -> APIResponse:
     return APIResponse(
         success=False,

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel
 from app.service.auth_service import login_user
 from app.service.user_service import service_create_user
@@ -9,6 +9,9 @@ from app.utils.response import ok,fail
 from app.utils.error_codes import INVALID_CREDENTIALS
 from app.core.security import create_access_token
 from app.service.refresh_service import rotate_refresh_token,logout_user
+from app.core.logging import logger
+from app.api.dependencies import get_current_user_id
+from fastapi import APIRouter,Depends
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
@@ -36,32 +39,28 @@ class LogoutRequest(BaseModel):
 
 @router.post("/register", status_code=201)
 def register(payload: RegisterRequest):
-    try:
-        user = service_create_user(
+   
+        user_id = service_create_user(
             name=payload.name,
             email=payload.email,
             password=payload.password,
         )
-        return ok(user)
-    except InvalidUserInput as e:
-        return fail(INVALID_CREDENTIALS,str(e))
+        return ok({"user_id": user_id})
 
 @router.post("/login")
 
 def login(payload: LoginRequest):
-    try:
-        user_id = login_user(payload.email, payload.password)
-        access = create_access_token(user_id)
-        refresh = issue_refresh_token(user_id)
 
-    
-        return ok({
+    user_id = login_user(payload.email, payload.password)
+    access = create_access_token(user_id)
+    refresh = issue_refresh_token(user_id)
+
+    return ok({
         "access_token": access,
         "refresh_token": refresh
         })
         
-    except InvalidUserInput as e:
-        return fail(INVALID_CREDENTIALS,str(e))
+    
 
 @router.post('/refresh')
 
@@ -75,9 +74,8 @@ def refresh(payload:RefreshRequest):
     
 @router.post("/logout")
 
-def logout(payload:LogoutRequest):
-        delete = logout_user(payload.refresh_token)
+def logout(payload:LogoutRequest,user_id: int = Depends(get_current_user_id)):
+        logout_user(user_id,payload.refresh_token)
         return ok({"logged_out": True})
-
 
 

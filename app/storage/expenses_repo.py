@@ -1,9 +1,5 @@
 from app.storage.db import get_connection
 from psycopg2.extras import RealDictCursor
-# import sqlite3
-# def row_to_dict(row:sqlite3):
-#     return dict(row)
-
 
 def create_expense(user_id,category_id,amount,note,spend_at):
     connection = get_connection()

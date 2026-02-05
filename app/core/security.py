@@ -4,7 +4,7 @@ from datetime import datetime,timedelta,timezone
 import secrets
 SECRET_KEY = "super-secret-key-change-later"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 2
+ACCESS_TOKEN_EXPIRE_MINUTES = 5
 
 def create_access_token(user_id:int):
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

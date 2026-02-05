@@ -8,7 +8,7 @@ from app.service.user_service import (
 )
 from app.core.exceptions import InvalidUserInput, UserNotFound
 from app.utils.response import ok,fail
-from app.utils.error_codes import CATEGORY_NOT_FOUND,EXPENSE_NOT_FOUND,INVALID_AMOUNT,INVALID_CREDENTIALS
+from app.utils.error_codes import INVALID_CREDENTIALS
 
 class UserResponse(BaseModel):
     id:int
@@ -19,9 +19,6 @@ class UserResponse(BaseModel):
 class UserUpdateRequest(BaseModel):
     name: Optional[str] = None
     email : Optional[str]  = None
-
-
-
 
 router = APIRouter(prefix="/users", tags=["users"])
 

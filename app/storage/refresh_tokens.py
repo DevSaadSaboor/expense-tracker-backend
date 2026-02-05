@@ -2,6 +2,7 @@ from datetime import datetime
 from app.storage.db import get_connection
 from psycopg2.extras import RealDictCursor
 
+
 def insert_refresh_token(user_id: int, token: str, expires_at):
     connection = get_connection()
     cur = connection.cursor(cursor_factory=RealDictCursor)

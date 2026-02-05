@@ -1,5 +1,5 @@
 <div align="center">
-# 💰 Expense Tracker API
+💰 Expense Tracker API
 </div>
 ### A production-grade backend API for a personal expense tracking application, built with FastAPI, raw SQL, and JWT-based authentication with refresh tokens.
 This project is designed with clean architecture, security, and real-world backend practices in mind.

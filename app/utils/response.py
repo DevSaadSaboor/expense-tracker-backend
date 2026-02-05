@@ -5,6 +5,7 @@ def ok(data):
         "error": None
     }
 
+
 def fail(code, message):
     return {
         "success": False,

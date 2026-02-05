@@ -1,7 +1,5 @@
 from app.storage.db import get_connection
-import sqlite3
 from psycopg2.extras import RealDictCursor
-
 
 def create_category(user_id,name):
     connection = get_connection()

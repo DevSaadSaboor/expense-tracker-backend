@@ -209,15 +209,10 @@ POST   /categories       # Create new category
 
 All endpoints except `/auth/register` and `/auth/login` require authentication:
 
-```http
 Authorization: Bearer <access_token>
-```
-
----
 
 🗄️ Database Schema
 
-```sql
 ┌─────────────────────┐
 │       users         │
 ├─────────────────────┤
@@ -252,9 +247,6 @@ Authorization: Bearer <access_token>
 │ spend_at            │
 │ created_at          │
 └─────────────────────┘
-```
-
----
 
  ⚙️ Configuration
 
@@ -262,17 +254,15 @@ Authorization: Bearer <access_token>
 
 Create a `.env` file in the root directory:
 
-```env
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 alembic upgrade head
 uvicorn app.main:app --reload
-```
+
 
 > ⚠️ **Security Warning:** Always use strong, unique values for `JWT_SECRET` in production!
 
----
 🧠 Design Decisions
 
 -Raw SQL chosen for transparency and control
@@ -281,8 +271,6 @@ uvicorn app.main:app --reload
 -Centralized error handling for consistent responses
 -Hard deletes used for simplicity (soft delete can be added if needed)
 
-
----
 
  👨‍💻 Author
 
@@ -295,12 +283,8 @@ Built as a portfolio-grade backend project focused on:
 - 🏗️ Clean backend architecture
 - 🚀 Production-ready best practices
 
----
-
-<div align="center">
-
 ⭐ Star this repo if you find it helpful!
 
 Made with ❤️ and FastAPI
 
-</div>
+

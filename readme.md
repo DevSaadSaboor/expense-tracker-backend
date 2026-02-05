@@ -1,7 +1,7 @@
 <div align="center">
 💰 Expense Tracker API
 </div>
-### A production-grade backend API for a personal expense tracking application, built with FastAPI, raw SQL, and JWT-based authentication with refresh tokens.
+A production-grade backend API for a personal expense tracking application, built with FastAPI, raw SQL, and JWT-based authentication with refresh tokens.
 This project is designed with clean architecture, security, and real-world backend practices in mind.
 ---
 
@@ -12,7 +12,6 @@ This project is designed with clean architecture, security, and real-world backe
 <td width="50%">
 
 ### 🔐 Authentication
-
 - ✅ User registration & login
 - ✅ JWT access tokens (short-lived)
 - ✅ Refresh tokens with rotation
@@ -23,7 +22,6 @@ This project is designed with clean architecture, security, and real-world backe
 <td width="50%">
 
 ### 📊 Data Management
-
 - ✅ Expense & category management
 - ✅ Monthly & category-wise reports
 - ✅ Pagination support
@@ -36,7 +34,6 @@ This project is designed with clean architecture, security, and real-world backe
 <td width="50%">
 
 ### 🏗️ Infrastructure
-
 - ✅ Dockerized setup
 - ✅ Alembic migrations
 - ✅ Clean architecture
@@ -44,9 +41,8 @@ This project is designed with clean architecture, security, and real-world backe
 - ✅ API documentation (Swagger)
 
 </td>
-</tr>
-<tr>
 <td width="50%">
+
 ### 📈 Observability & Reliability
 - ✅ Structured JSON logging
 - ✅ Request ID tracing
@@ -54,11 +50,11 @@ This project is designed with clean architecture, security, and real-world backe
 - ✅ Centralized error handling
 - ✅ Request duration & lifecycle logging
 
-
 </td>
 </tr>
-
 </table>
+
+
 
 ---
 
@@ -99,7 +95,8 @@ The API will be available at `http://localhost:8000`
 
 ## 🛠 Tech Stack
 
-<div align="center">
+<table>
+<tr>
 
 -FastAPI – Web framework
 -PostgreSQL – Database
@@ -110,7 +107,9 @@ The API will be available at `http://localhost:8000`
 -bcrypt – Password hashing
 -structlog – Structured logging
 
-</div>
+</tr>
+</table>
+
 
 ---
 
@@ -177,37 +176,36 @@ Refresh tokens:
 
 ````
 
----
 
-## 📚 API Endpoints
+ 📚 API Endpoints
 
-### 🔐 Authentication
-
-```http
-POST   /auth/register          Create new user account
-POST   /auth/login             Login and receive tokens
-POST   /auth/refresh           Rotate refresh token
-POST   /auth/logout            Revoke refresh token and logout
-````
-
-### 💰 Expenses
+ 🔐 Authentication
 
 ```http
-GET    /expenses               List expenses (paginated)
-POST   /expenses               Create new expense
-GET    /expenses/{id}          Get expense by ID
-PUT    /expenses/{id}          Update expense
-DELETE /expenses/{id}          Delete expense
+POST   /auth/register    # Create new user account
+POST   /auth/login       # Login and receive tokens
+POST   /auth/refresh     # Rotate refresh token
+POST   /auth/logout      # Revoke refresh token and logout
 ```
 
-### 🏷️ Categories
+💰 Expenses
 
 ```http
-GET    /categories             List all categories
-POST   /categories             Create new category
+GET    /expenses         # List expenses (paginated)
+POST   /expenses         # Create new expense
+GET    /expenses/{id}    # Get expense by ID
+PUT    /expenses/{id}    # Update expense
+DELETE /expenses/{id}    # Delete expense
 ```
 
-### 🔒 Protected Endpoints
+🏷️ Categories
+
+```http
+GET    /categories       # List all categories
+POST   /categories       # Create new category
+```
+
+🔒 Protected Endpoints
 
 All endpoints except `/auth/register` and `/auth/login` require authentication:
 
@@ -217,7 +215,7 @@ Authorization: Bearer <access_token>
 
 ---
 
-## 🗄️ Database Schema
+🗄️ Database Schema
 
 ```sql
 ┌─────────────────────┐
@@ -258,9 +256,9 @@ Authorization: Bearer <access_token>
 
 ---
 
-## ⚙️ Configuration
+ ⚙️ Configuration
 
-### Environment Variables
+ Environment Variables
 
 Create a `.env` file in the root directory:
 
@@ -286,9 +284,9 @@ uvicorn app.main:app --reload
 
 ---
 
-## 👨‍💻 Author
+ 👨‍💻 Author
 
-## ** Saad Saboor **
+ ** Saad Saboor **
 
 Built as a portfolio-grade backend project focused on:
 
@@ -301,7 +299,7 @@ Built as a portfolio-grade backend project focused on:
 
 <div align="center">
 
-### ⭐ Star this repo if you find it helpful!
+⭐ Star this repo if you find it helpful!
 
 Made with ❤️ and FastAPI
 

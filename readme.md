@@ -45,6 +45,19 @@ This project is designed with clean architecture, security, and real-world backe
 
 </td>
 </tr>
+<tr>
+<td width="50%">
+### 📈 Observability & Reliability
+- ✅ Structured JSON logging
+- ✅ Request ID tracing
+- ✅ Service-level business event logging
+- ✅ Centralized error handling
+- ✅ Request duration & lifecycle logging
+
+
+</td>
+</tr>
+
 </table>
 
 ---
@@ -88,13 +101,14 @@ The API will be available at `http://localhost:8000`
 
 <div align="center">
 
-FastAPI – Web framework
-PostgreSQL – Database
-psycopg2 – Raw SQL driver
-Alembic – Schema migrations
-Docker & Docker Compose – Containerization
-python-jose – JWT handling
-bcrypt – Password hashing
+-FastAPI – Web framework
+-PostgreSQL – Database
+-psycopg2 – Raw SQL driver
+-Alembic – Schema migrations
+-Docker & Docker Compose – Containerization
+-python-jose – JWT handling
+-bcrypt – Password hashing
+-structlog – Structured logging
 
 </div>
 
@@ -105,10 +119,10 @@ bcrypt – Password hashing
 ```
 expense-tracker-api/
 │
-├── 📁 api/                    # FastAPI routes & request/response models
-│   ├── auth.py               # Authentication endpoints
-│   ├── expenses.py           # Expense endpoints
-│   └── categories.py         # Category endpoints
+├── 📁 api/                    # HTTP routes & request handling
+│   ├── auth.py               
+│   ├── expenses.py           
+│   └── categories.py         
 │
 ├── 📁 service/                # Business logic & validation
 │   ├── auth_service.py
@@ -139,6 +153,7 @@ expense-tracker-api/
 - **API Layer:** Handles HTTP requests/responses, validation
 - **Service Layer:** Business rules, authentication, authorization
 - **Storage Layer:** Database operations, raw SQL queries
+- **Middleware:** Request tracing, error handling
 
 ---
 
@@ -155,19 +170,10 @@ expense-tracker-api/
 
 </div>
 Refresh tokens:
-Are stored in the database
-Are rotated on every refresh
-Are revoked on logout
-Are checked for expiration and revocation
-
-### 🔄 Authentication Flow
-
-User logs in → receives access token + refresh token
-Access token is used for API requests
-When access token expires → client sends refresh token
-Backend validates and rotates the refresh token
-New access + refresh tokens are issued
-Logout revokes the refresh token in the database
+-Stored in the database
+-Rotated on every refresh
+-Revoked on logout
+-Validated for expiration and reuse
 
 ````
 
@@ -269,14 +275,14 @@ uvicorn app.main:app --reload
 > ⚠️ **Security Warning:** Always use strong, unique values for `JWT_SECRET` in production!
 
 ---
+🧠 Design Decisions
 
-## 📈 Future Improvements
+-Raw SQL chosen for transparency and control
+-Clean architecture to enforce separation of concerns
+-Logging placed in services, not controllers
+-Centralized error handling for consistent responses
+-Hard deletes used for simplicity (soft delete can be added if needed)
 
-- [ ] 📝 Structured logging & Request Tracing
-- [ ] 🚀 Cloud deployment
-- [ ] 📈 Monitoring & metrics
-- [ ] 🔒 Rate limiting
-- [ ] 🏊 Connection pooling
 
 ---
 
@@ -287,8 +293,8 @@ uvicorn app.main:app --reload
 Built as a portfolio-grade backend project focused on:
 
 - 🔐 Real-world authentication patterns
-- 🗄️ PostgreSQL and raw SQL
-- 🏗️ Clean architecture principles
+- 🗄️ Observability & logging
+- 🏗️ Clean backend architecture
 - 🚀 Production-ready best practices
 
 ---

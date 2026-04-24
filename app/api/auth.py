@@ -6,19 +6,15 @@ from app.service.refresh_service import issue_refresh_token
 from app.core.security import create_access_token
 from app.core.exceptions import InvalidUserInput
 from app.utils.response import ok,fail
-from app.utils.error_codes import INVALID_CREDENTIALS
-from app.core.security import create_access_token
 from app.service.refresh_service import rotate_refresh_token,logout_user
-from app.core.logging import logger
 from app.api.dependencies import get_current_user_id
-from fastapi import APIRouter,Depends
+from fastapi import Depends
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 class LoginRequest(BaseModel):
     email: str
     password: str
-
 
 class RegisterRequest(BaseModel):
     name: str
@@ -48,32 +44,25 @@ def register(payload: RegisterRequest):
         return ok({"user_id": user_id})
 
 @router.post("/login")
-
 def login(payload: LoginRequest):
-
     user_id = login_user(payload.email, payload.password)
     access = create_access_token(user_id)
     refresh = issue_refresh_token(user_id)
-
     return ok({
         "access_token": access,
         "refresh_token": refresh
         })
         
     
-
 @router.post('/refresh')
-
 def refresh(payload:RefreshRequest):
     try:
         new_access = rotate_refresh_token(payload.refresh_token)
         return ok(new_access)
-    
     except InvalidUserInput as e:
         return fail('Invalid Refresh Token', str(e))
     
 @router.post("/logout")
-
 def logout(payload:LogoutRequest,user_id: int = Depends(get_current_user_id)):
         logout_user(user_id,payload.refresh_token)
         return ok({"logged_out": True})

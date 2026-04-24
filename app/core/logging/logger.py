@@ -1,7 +1,7 @@
 import logging
 import structlog
 
-from app.core.observability.context import get_user_id,get_operation,get_request_id
+from app.core.observability.context import get_operation,get_request_id
 
 
 def add_request_context(logger,method_name, event_dict):

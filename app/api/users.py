@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from app.api.dependencies import get_current_user_id
 from pydantic import BaseModel
 from typing import Optional
@@ -30,7 +30,6 @@ def get_my_profile(user_id: int = Depends(get_current_user_id)):
     except UserNotFound as e:
         return fail(INVALID_CREDENTIALS,str(e))
     
-
 
 @router.patch("/me")
 def update_my_profile(

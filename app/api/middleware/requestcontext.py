@@ -5,11 +5,9 @@ from app.core.logging import logger
 
 from app.core.observability.context import (
     set_request_id,
-    set_user_id,
     set_operation,
     reset_operation,
-    reset_request_id,
-    reset_user_id
+    reset_request_id
 )
 
 

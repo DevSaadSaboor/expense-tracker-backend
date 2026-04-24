@@ -1,14 +1,13 @@
-from fastapi import APIRouter,status,HTTPException
+from fastapi import APIRouter,status
 from pydantic import BaseModel
 from app.core.exceptions import InvalidUserInput
 from app.service.categories_service import service_delete_category,service_update_category,service_create_category,service_get_category_by_id,service_get_categories_by_user
-router = APIRouter(prefix="/categories", tags=["categories"])
-from typing import List,Optional
+from typing import Optional
 from fastapi import Depends
 from app.api.dependencies import get_current_user_id
 from app.utils.response import ok,fail
 from app.utils.error_codes import CATEGORY_NOT_FOUND
-from app.core.logging import logger
+router = APIRouter(prefix="/categories", tags=["categories"])
 
 class CategoriesCreateRequest(BaseModel):
     name: str
@@ -65,7 +64,7 @@ def get_update_endpoint(category_id:int,payload:CategoriesUpdateRequest,user_id:
 
 def get_delete_endpoint(category_id:int,user_id: int = Depends(get_current_user_id)):   
     try:
-        delete = service_delete_category(user_id,category_id)
+        service_delete_category(user_id,category_id)
     except InvalidUserInput as e :
         return fail(CATEGORY_NOT_FOUND,str(e))
     return ok(None)

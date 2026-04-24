@@ -1,7 +1,6 @@
 from app.core.exceptions import InvalidUserInput
 from app.storage.expenses_repo import get_monthly_totals_between_dates,get_monthly_category_totals,get_category_month_total,get_category_totals,get_expenses_with_category,get_expense_by_category,get_expenses_by_user,create_expense,update_expense,get_expenses_by_id,get_expenses_paginated,delete_expense
 from app.storage.categories_repo import get_category_by_id
-import sqlite3
 from datetime import datetime
 from app.core.logging import logger
 

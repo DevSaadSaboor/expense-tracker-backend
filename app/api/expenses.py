@@ -1,90 +1,111 @@
-from fastapi import APIRouter,status,Depends
+from fastapi import APIRouter, status, Depends
 from pydantic import BaseModel
+from typing import Optional
 from app.core.exceptions import InvalidUserInput
 from app.api.dependencies import get_current_user_id
-from typing import Optional
-from app.utils.response import ok,fail
-from app.service.expense_service import service_delete_expense,service_create_expense,service_get_expense_by_id,service_get_expenses_page,service_update_expense
+from app.utils.response import ok, fail
+from app.service.expense_service import (
+    service_delete_expense,
+    service_create_expense,
+    service_get_expense_by_id,
+    service_get_expenses_page,
+    service_update_expense,
+)
 from app.utils.error_codes import EXPENSE_NOT_FOUND
+
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
 
 class ExpenseCreateRequest(BaseModel):
-    category_id :Optional[int] = None
+    category_id: Optional[int] = None
     amount: int
     note: str
-    spend_at : str
+    spend_at: str
 
 class ExpenseResponse(BaseModel):
-    id:int
-    user_id :int
-    category_id :Optional[int]
-    amount:int
-    note:str
-    spend_at:str
-    created_at:str
+    id: int
+    user_id: int
+    category_id: Optional[int]
+    amount: int
+    note: str
+    spend_at: str
+    created_at: str
 
 class ExpenseUpdateRequest(BaseModel):
-    amount : Optional[int] = None
-    note : Optional[str] = None
+    amount: Optional[int] = None
+    note: Optional[str] = None
     spend_at: Optional[str] = None
-    category_id : Optional[int] = None 
+    category_id: Optional[int] = None
+
 
 router = APIRouter(
-    prefix="/expenses",
-    tags=["Expenses"],
-    dependencies=[Depends(get_current_user_id)]  
+    prefix="/expenses", tags=["Expenses"], dependencies=[Depends(get_current_user_id)]
 )
-@router.post("/", status_code = status.HTTP_201_CREATED)
 
-def create_expense_endpoint(payload:ExpenseCreateRequest, user_id: int = Depends(get_current_user_id)):
+
+@router.post("/", status_code=status.HTTP_201_CREATED)
+def create_expense_endpoint(
+    payload: ExpenseCreateRequest, user_id: int = Depends(get_current_user_id)
+):
     expense = service_create_expense(
         user_id=user_id,
         category_id=payload.category_id,
         amount=payload.amount,
-        note = payload.note,
+        note=payload.note,
         spend_at=payload.spend_at,
     )
     return ok(expense)
-    
-@router.get("/{expense_id}", status_code= status.HTTP_200_OK)
-def get_expense_endpoint(expense_id:int, user_id :int = Depends(get_current_user_id) ):
-   
+
+
+@router.get("/{expense_id}", status_code=status.HTTP_200_OK)
+def get_expense_endpoint(expense_id: int, user_id: int = Depends(get_current_user_id)):
+
     try:
-        expense = service_get_expense_by_id(expense_id,user_id)
-    except InvalidUserInput as i :
-        return fail(EXPENSE_NOT_FOUND,str(i))
+        expense = service_get_expense_by_id(expense_id, user_id)
+    except InvalidUserInput as i:
+        return fail(EXPENSE_NOT_FOUND, str(i))
     return ok(expense)
 
-@router.get("/")
 
-def get_expenses_endpoint(limit:int,offset:int, user_id :int = Depends(get_current_user_id)):
-   
+@router.get("/")
+def get_expenses_endpoint(
+    limit: int, offset: int, user_id: int = Depends(get_current_user_id)
+):
     try:
-        expenses = service_get_expenses_page(user_id,limit,offset,)
+        expenses = service_get_expenses_page(
+            user_id,
+            limit,
+            offset,
+        )
     except InvalidUserInput as e:
-         return fail(EXPENSE_NOT_FOUND,str(e))
+        return fail(EXPENSE_NOT_FOUND, str(e))
     return ok(expenses)
 
-@router.patch("/{expense_id}")
 
-def update_expense_endpoint(expense_id:int,payload:ExpenseUpdateRequest,user_id :int = Depends(get_current_user_id)):
-    
+@router.patch("/{expense_id}")
+def update_expense_endpoint(
+    expense_id: int,
+    payload: ExpenseUpdateRequest,
+    user_id: int = Depends(get_current_user_id),
+):
+
     try:
         update = service_update_expense(
-        user_id= user_id,
-        expense_id=expense_id,
-        fields=payload.model_dump(exclude_unset = True)
-    )  
+            user_id=user_id,
+            expense_id=expense_id,
+            fields=payload.model_dump(exclude_unset=True),
+        )
     except InvalidUserInput as e:
-         return fail(EXPENSE_NOT_FOUND,str(e))
+        return fail(EXPENSE_NOT_FOUND, str(e))
     return ok(update)
 
-@router.delete("/{expense_id}",status_code=status.HTTP_200_OK)
 
-def delete_expense_endpoint(expense_id:int,user_id :int = Depends(get_current_user_id)):
+@router.delete("/{expense_id}", status_code=status.HTTP_200_OK)
+def delete_expense_endpoint(
+    expense_id: int, user_id: int = Depends(get_current_user_id)
+):
     try:
-       service_delete_expense(user_id,expense_id)
+        service_delete_expense(user_id, expense_id)
     except InvalidUserInput as e:
-         return fail(EXPENSE_NOT_FOUND,str(e))
+        return fail(EXPENSE_NOT_FOUND, str(e))
     return ok(None)

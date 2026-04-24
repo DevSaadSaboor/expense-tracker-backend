@@ -2,16 +2,17 @@ from app.storage.db import get_connection
 from psycopg2.extras import RealDictCursor
 
 
-def create_user(name:str,email:str,password_hash):
+def create_user(name: str, email: str, password_hash):
     connection = get_connection()
     cur = connection.cursor(cursor_factory=RealDictCursor)
     try:
         cur.execute(
-    """
+            """
     INSERT into USERS (name,email,password_hash)
     values(%s,%s,%s)
     RETURNING id,name,email,created_at;
-    """,(name,email,password_hash)
+    """,
+            (name, email, password_hash),
         )
         row = cur.fetchone()
         connection.commit()
@@ -23,14 +24,17 @@ def create_user(name:str,email:str,password_hash):
         cur.close()
 
 
-def list_users(limit:int,offset:int):
+def list_users(limit: int, offset: int):
     connection = get_connection()
     cur = connection.cursor(cursor_factory=RealDictCursor)
     try:
-        cur.execute("""
+        cur.execute(
+            """
     select id,name,email,created_at from users order by id
     limit %s offset %s
-    """,(limit,offset))
+    """,
+            (limit, offset),
+        )
 
         rows = cur.fetchall()
         # result = []
@@ -45,15 +49,17 @@ def list_users(limit:int,offset:int):
     finally:
         cur.close()
 
+
 def get_user_by_id(user_id):
     connection = get_connection()
     cur = connection.cursor(cursor_factory=RealDictCursor)
     try:
         cur.execute(
-    """
+            """
     SELECT  id,name,email,created_at from users where id = %s 
-    """,(user_id,)
-    )
+    """,
+            (user_id,),
+        )
         row = cur.fetchone()
         return row if row else None
     finally:
@@ -73,21 +79,22 @@ def update_user(user_id: int, fields: dict):
     set_clause = ", ".join(set_parts)
     values.append(user_id)
     try:
-        cur.execute(f"""
+        cur.execute(
+            f"""
         UPDATE users SET {set_clause} WHERE id = %s
 
         """,
-        tuple(values)
-    )
+            tuple(values),
+        )
         connection.commit()
         cur.execute(
-        """
+            """
         SELECT id, name, email, created_at
         FROM users
         WHERE id = %s
         """,
-        (user_id,)
-    )
+            (user_id,),
+        )
 
         row = cur.fetchone()
         return row if row else None
@@ -98,13 +105,16 @@ def update_user(user_id: int, fields: dict):
         cur.close()
 
 
-def delete_user(user_id : int):
+def delete_user(user_id: int):
     connection = get_connection()
     cur = connection.cursor(cursor_factory=RealDictCursor)
     try:
-        cur.execute("""
+        cur.execute(
+            """
         delete from users where id = %s
-        """,(user_id,))
+        """,
+            (user_id,),
+        )
         connection.commit()
         if cur.rowcount == 0:
             return False
@@ -115,24 +125,20 @@ def delete_user(user_id : int):
     finally:
         cur.close()
 
+
 def get_user_by_lognin(email):
     connection = get_connection()
     cur = connection.cursor(cursor_factory=RealDictCursor)
     try:
-        cur.execute("""
+        cur.execute(
+            """
         select id,password_hash from users where email = %s 
-        """,(email,))
+        """,
+            (email,),
+        )
         rows = cur.fetchone()
         return rows if rows else None
     except Exception:
         raise
     finally:
         cur.close()
-
-
-
-
-
-
-
-

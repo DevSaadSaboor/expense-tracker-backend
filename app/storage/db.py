@@ -8,30 +8,16 @@ load_dotenv()
 
 def get_connection():
     return psycopg2.connect(
-        os.getenv("DATABASE_URL"),
-        cursor_factory=psycopg2.extras.RealDictCursor
+        os.getenv("DATABASE_URL"), cursor_factory=psycopg2.extras.RealDictCursor
     )
-
-# DB_path = Path(__file__).resolve().parents[2] /"data"/ "expense_tracker.db"
-# connection = None
-# def get_connection():
-#     global connection
-#     DB_path.parent.mkdir(parents=True, exist_ok=True)
-#     if connection is None:
-#         connection = sqlite3.connect(DB_path)
-#         connection.row_factory = sqlite3.Row
-#         connection.execute("PRAGMA foreign_keys = ON;")
-#     return connection
-
 
 def create_table():
 
     connection = get_connection()
     cur = connection.cursor()
 
-
     cur.execute(
-    """
+        """
     create TABLE if not EXISTS users(
     id INTEGER PRIMARY key AUTOINCREMENT,
     name text not null,
@@ -41,9 +27,8 @@ def create_table():
     """
     )
 
-
     cur.execute(
-    """
+        """
     create table if not EXISTS categories(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER not NULL,
@@ -58,7 +43,7 @@ def create_table():
     """
     )
     cur.execute(
-    """
+        """
     create table if not EXISTS expenses(
     id INTEGER PRIMARY key AUTOINCREMENT,
     user_id INTEGER not null,

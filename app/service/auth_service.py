@@ -53,6 +53,7 @@ def register_user(name: str, email: str, password: str):
 
     return user_id
 
+
 def login_user(email: str, password: str):
     logger.info(
         "login_attempt",
@@ -98,6 +99,7 @@ def login_user(email: str, password: str):
     )
 
     return user["id"]
+
 
 def logout_user(user_id: int, refresh_token: str):
     logger.info(

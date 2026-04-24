@@ -2,6 +2,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 from app.core.logging import logger
 
+
 async def unhandled_exception_handler(request: Request, exc: Exception):
     logger.exception(
         "unhandled_exception",

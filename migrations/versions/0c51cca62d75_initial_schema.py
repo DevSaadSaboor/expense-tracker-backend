@@ -1,17 +1,18 @@
 """initial schema
 
 Revision ID: 0c51cca62d75
-Revises: 
+Revises:
 Create Date: 2026-02-02 14:50:34.243287
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0c51cca62d75'
+revision: str = "0c51cca62d75"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -70,6 +71,7 @@ def upgrade():
             ON DELETE CASCADE
     );
     """)
+
 
 def downgrade():
     op.execute("""

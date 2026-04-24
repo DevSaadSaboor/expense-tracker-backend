@@ -7,7 +7,7 @@ from app.core.observability.context import (
     set_request_id,
     set_operation,
     reset_operation,
-    reset_request_id
+    reset_request_id,
 )
 
 
@@ -29,11 +29,11 @@ async def request_context_middleware(request: Request, call_next):
         duration_ms = int((time.perf_counter() - stat_time) * 1000)
         logger.info(
             "request_completed",
-            method = request.method,
-            path = request.url.path,
-            status_code = getattr(response, 'status_code', None),
-            duration_ms = duration_ms
-        )   
+            method=request.method,
+            path=request.url.path,
+            status_code=getattr(response, "status_code", None),
+            duration_ms=duration_ms,
+        )
         reset_request_id(req_token)
         reset_operation(op_token)
         # reset_user_id(user_token)

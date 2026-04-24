@@ -1,16 +1,17 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
+from fastapi import Depends
 from app.service.auth_service import login_user
 from app.service.user_service import service_create_user
 from app.service.refresh_service import issue_refresh_token
 from app.core.security import create_access_token
 from app.core.exceptions import InvalidUserInput
-from app.utils.response import ok,fail
-from app.service.refresh_service import rotate_refresh_token,logout_user
+from app.utils.response import ok, fail
+from app.service.refresh_service import rotate_refresh_token, logout_user
 from app.api.dependencies import get_current_user_id
-from fastapi import Depends
-router = APIRouter(prefix="/auth", tags=["auth"])
 
+
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 class LoginRequest(BaseModel):
     email: str
@@ -27,44 +28,44 @@ class RegisterResponse(BaseModel):
     email: str
     created_at: str
 
+
 class RefreshRequest(BaseModel):
-    refresh_token : str
+    refresh_token: str
+
 
 class LogoutRequest(BaseModel):
-    refresh_token : str
+    refresh_token: str
+
 
 @router.post("/register", status_code=201)
 def register(payload: RegisterRequest):
-   
-        user_id = service_create_user(
-            name=payload.name,
-            email=payload.email,
-            password=payload.password,
-        )
-        return ok({"user_id": user_id})
+
+    user_id = service_create_user(
+        name=payload.name,
+        email=payload.email,
+        password=payload.password,
+    )
+    return ok({"user_id": user_id})
+
 
 @router.post("/login")
 def login(payload: LoginRequest):
     user_id = login_user(payload.email, payload.password)
     access = create_access_token(user_id)
     refresh = issue_refresh_token(user_id)
-    return ok({
-        "access_token": access,
-        "refresh_token": refresh
-        })
-        
-    
-@router.post('/refresh')
-def refresh(payload:RefreshRequest):
+    return ok({"access_token": access, "refresh_token": refresh})
+
+
+@router.post("/refresh")
+def refresh(payload: RefreshRequest):
     try:
         new_access = rotate_refresh_token(payload.refresh_token)
         return ok(new_access)
     except InvalidUserInput as e:
-        return fail('Invalid Refresh Token', str(e))
-    
+        return fail("Invalid Refresh Token", str(e))
+
+
 @router.post("/logout")
-def logout(payload:LogoutRequest,user_id: int = Depends(get_current_user_id)):
-        logout_user(user_id,payload.refresh_token)
-        return ok({"logged_out": True})
-
-
+def logout(payload: LogoutRequest, user_id: int = Depends(get_current_user_id)):
+    logout_user(user_id, payload.refresh_token)
+    return ok({"logged_out": True})

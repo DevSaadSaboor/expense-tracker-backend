@@ -1,6 +1,14 @@
-from datetime import datetime,timezone,timedelta
-from app.storage.refresh_tokens import insert_refresh_token, get_refresh_token,revoke_refresh_token
-from app.core.security import create_access_token, create_refresh_token, refresh_expires_at
+from datetime import datetime, timezone, timedelta
+from app.storage.refresh_tokens import (
+    insert_refresh_token,
+    get_refresh_token,
+    revoke_refresh_token,
+)
+from app.core.security import (
+    create_access_token,
+    create_refresh_token,
+    refresh_expires_at,
+)
 from app.core.exceptions import InvalidUserInput
 
 
@@ -12,58 +20,25 @@ def issue_refresh_token(user_id: int):
 
 
 def rotate_refresh_token(refresh_token: str):
-   row = get_refresh_token(refresh_token)
-   if not row:
+    row = get_refresh_token(refresh_token)
+    if not row:
         raise InvalidUserInput("Invalid refresh token")
-   if row['revoked']:
+    if row["revoked"]:
         raise InvalidUserInput("Refresh token revoked")
-   if row['expires_at'] < datetime.now(timezone.utc):
-       raise InvalidUserInput("Refresh token expired")
-   user_id = row['user_id']
-   
-   revoke_refresh_token(refresh_token)
-   new_refresh = create_refresh_token()
-   expires  = datetime.now(timezone.utc) + timedelta(days=30)
-   insert_refresh_token(user_id,new_refresh,expires)
-   access = create_access_token(user_id)
-   return {
-       'access_token' : access,
-       'refresh_token' : new_refresh
-   }
+    if row["expires_at"] < datetime.now(timezone.utc):
+        raise InvalidUserInput("Refresh token expired")
+    user_id = row["user_id"]
 
-       
-
-def logout_user(refresh_token:str):
     revoke_refresh_token(refresh_token)
+    new_refresh = create_refresh_token()
+    expires = datetime.now(timezone.utc) + timedelta(days=30)
+    insert_refresh_token(user_id, new_refresh, expires)
+    access = create_access_token(user_id)
+    return {"access_token": access, "refresh_token": new_refresh}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def logout_user(refresh_token: str):
+    revoke_refresh_token(refresh_token)
 
 
 # from datetime import datetime
@@ -78,7 +53,7 @@ def logout_user(refresh_token:str):
 
 
 # def issue_refresh_token(user_id: int):
-   
+
 #     conn = get_connection()
 #     token = create_refresh_token()
 #     expires = refresh_expires_at()

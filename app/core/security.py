@@ -1,41 +1,42 @@
 import bcrypt
-from jose import jwt,JWTError
-from datetime import datetime,timedelta,timezone
+from jose import jwt, JWTError
+from datetime import datetime, timedelta, timezone
 import secrets
+
 SECRET_KEY = "super-secret-key-change-later"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 5
 
-def create_access_token(user_id:int):
+
+def create_access_token(user_id: int):
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = {
-        "sub": str(user_id),
-        "exp": expire
-    }
-    token = jwt.encode(payload,SECRET_KEY,algorithm=ALGORITHM)
+    payload = {"sub": str(user_id), "exp": expire}
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token
 
-def decode_access_token(token:str):
+
+def decode_access_token(token: str):
     try:
-        payload = jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
-        user_id = payload.get('sub')
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")
 
         if user_id is None:
-            raise ValueError('Invalid token')
+            raise ValueError("Invalid token")
         return int(user_id)
     except JWTError:
-        raise ValueError('invalid or expired token')
+        raise ValueError("invalid or expired token")
+
 
 def create_refresh_token():
     return secrets.token_urlsafe(64)
+
 
 def refresh_expire_token():
     return datetime.now(timezone.utc) + timedelta(days=14)
 
 
 def refresh_expires_at():
-    return   datetime.now(timezone.utc) + timedelta(days=14)
-
+    return datetime.now(timezone.utc) + timedelta(days=14)
 
 
 def hash_password(password: str) -> str:
